@@ -5,9 +5,11 @@
 	"features": {
 		"color": "3300ff",
 		"custom_colors": [
-			{ "name": "Body", "story": "ebe6ff", "arena": [ "ebe6ff", "e6ffeb", "ffebe6", "ffe6fa"] },
+			{ "name": "Body", "story": "ebe6ff", "arena": [ "ebe6ff", "e6ffeb", "ffebe6", "ffe6fa" ] },
 			{ "name": "Eyes", "story": "3300ff", "arena": [ "3300ff", "00ff33", "ff3300", "ff00cc" ] }
-		]
+		],
+
+		"start_room": "HI_A22",
 		
 		"select_menu_scene": "Slugcat_Prototype",
 		"select_menu_scene_ascended": "Ghost_Prototype"

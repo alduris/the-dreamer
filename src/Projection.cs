@@ -11,14 +11,13 @@ namespace Dreamer
     {
         private WeakReference<Player> playerRef;
 
-        private Vector2 vel = Vector2.zero;
-        private int cloudCount;
-        private int starCount;
-        private Quaternion[] cloudSin;
-        private float[] cloudAlphas;
-        private float[] cloudRots;
-        private Vector2[] starOffsets;
-        private Vector3[] starSin;
+        private readonly int cloudCount;
+        private readonly int starCount;
+        private readonly Quaternion[] cloudSin;
+        private readonly float[] cloudAlphas;
+        private readonly float[] cloudRots;
+        private readonly Vector2[] starOffsets;
+        private readonly Vector3[] starSin;
 
         private int lastLife = 0;
         private int life = 0;
@@ -30,6 +29,8 @@ namespace Dreamer
         {
             playerRef = new WeakReference<Player>(player);
             room = player.room;
+            pos = player.mainBodyChunk.pos;
+            lastPos = pos;
             vel = Custom.RNV().normalized * 1.5f;
 
             lightColor = PlayerColor.GetCustomColor(player.graphicsModule as PlayerGraphics, "Body");
@@ -155,7 +156,10 @@ namespace Dreamer
             for (int i = 0; i < sLeaser.sprites.Length; i++)
             {
                 sLeaser.sprites[i].color = (i < cloudCount) ? Color.Lerp(darkColor, lightColor, Mathf.Pow(Random.value * 0.2f, 1.5f)) : lightColor;
-                sLeaser.sprites[i].alpha = cloudAlphas[i];
+                if (i < cloudCount)
+                {
+                    sLeaser.sprites[i].alpha = cloudAlphas[i];
+                }
             }
         }
 
@@ -168,16 +172,16 @@ namespace Dreamer
 
             for (int i = 0; i < cloudCount; i++)
             {
-                float t = lifeFac * cloudSin[i].z + cloudSin[i].w;
-                var v = new Vector2(Mathf.Sin(t + cloudSin[i].x), Mathf.Cos(t + cloudSin[i].y));
+                float t = lifeFac * 0.3f * cloudSin[i].z + cloudSin[i].w;
+                var v = new Vector2(Mathf.Cos(t + cloudSin[i].x), Mathf.Cos(t + cloudSin[i].y));
                 sLeaser.sprites[i].SetPosition(posFac + Custom.rotateVectorDeg(v, cloudRots[i]) * 12f);
             }
 
             for (int i = 0; i < starCount; i++)
             {
                 var t = Mathf.Sin(lifeFac * 0.4f * starSin[i].x + starSin[i].y) * starSin[i].z;
-                var s = Custom.rotateVectorDeg(Vector2.up * t, starOffsets[i].GetAngle()) * 5f;
-                var v = starOffsets[i] + s;
+                var s = Custom.rotateVectorDeg(Vector2.up * t, starOffsets[i].GetAngle() + 90f) * 6f;
+                var v = starOffsets[i] * 20f + s;
                 sLeaser.sprites[i + cloudCount].SetPosition(posFac + v);
             }
 
@@ -222,7 +226,7 @@ namespace Dreamer
 
             public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
             {
-                sLeaser.sprites = [new FSprite("halyGlyph" + Random.Range(0, 7), true)];
+                sLeaser.sprites = [new FSprite("haloGlyph" + Random.Range(0, 7), true)];
                 AddToContainer(sLeaser, rCam, null);
             }
 
