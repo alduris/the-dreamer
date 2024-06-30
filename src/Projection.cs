@@ -78,8 +78,8 @@ namespace Dreamer
                             var mag = Mathf.Min(1f, 1f / Vector2.Distance(pos, chunk.pos));
                             if (mag > 0.01f)
                             {
-                                chunk.vel += (pos - chunk.pos) * mag / chunk.mass;
-                                chunk.pos += (pos - chunk.pos) * mag / chunk.mass;
+                                chunk.vel -= (pos - chunk.pos) * mag / chunk.mass;
+                                chunk.pos -= (pos - chunk.pos) * mag / chunk.mass;
                             }
                         }
                     }

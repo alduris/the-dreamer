@@ -18,7 +18,7 @@ namespace Dreamer
         {
             try
             {
-                // Controls
+                // Controls + movement
                 On.Player.Update += Player_Update;
 
                 // Stun
@@ -40,7 +40,7 @@ namespace Dreamer
             {
                 // Toggle ability
                 var input = self.controller?.GetInput() ?? RWInput.PlayerInput(self.playerState.playerNumber);
-                if (input.pckp && input.thrw && !data.astralKeyPress && self.stun == 0 && self.AI == null)
+                if (input.pckp && input.thrw && !data.astralKeyPress && (self.stun == 0 || data.astral) && self.AI == null)
                 {
                     data.astralKeyPress = true;
                     data.astral = !data.astral;
@@ -51,7 +51,6 @@ namespace Dreamer
                     data.astralKeyPress = false;
                     Debug.Log("BYE");
                 }
-                Debug.Log(data.astralKeyPress);
 
                 if (data.astral)
                 {
