@@ -5,7 +5,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using UnityEngine;
 
-namespace SlugTemplate
+namespace Dreamer
 {
     [BepInPlugin(MOD_ID, "The Dreamer", "1.0")]
     class Plugin : BaseUnityPlugin
@@ -63,6 +63,15 @@ namespace SlugTemplate
                 if (data.astral)
                 {
                     self.stun = 2;
+
+                    if (data.projection == null)
+                    {
+                        data.projection = new Projection(self);
+                    }
+                    else
+                    {
+                        data.projection.MovementUpdate(self.input[0]);
+                    }
                 }
             }
         }
