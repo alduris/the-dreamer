@@ -26,5 +26,6 @@ namespace Dreamer
     internal class DreamerData
     {
         public bool astral = false;
+        public bool astralKeyPress = false;
     }
 }
