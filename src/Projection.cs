@@ -45,7 +45,7 @@ namespace Dreamer
             for (int i = 0; i < cloudCount; i++)
             {
                 cloudSin[i] = Random.rotation;
-                cloudAlphas[i] = Random.Range(0.6f, 0.85f);
+                cloudAlphas[i] = Random.Range(0.45f, 0.8f);
                 cloudRots[i] = Random.Range(0f, 360f);
             }
 
@@ -131,7 +131,7 @@ namespace Dreamer
 
             for (int i = 0; i < cloudCount; i++)
             {
-                sLeaser.sprites[i] = new FSprite("Circle20", true) { shader = rCam.game.rainWorld.Shaders["FlatLight"] };
+                sLeaser.sprites[i] = new FSprite("Circle20", true);
             }
             for (int i = cloudCount; i < cloudCount + starCount; i++)
             {
