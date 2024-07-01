@@ -53,7 +53,7 @@ namespace Dreamer
             starSin = new Vector3[starCount];
             for (int i = 0; i < starCount; i++)
             {
-                starOffsets[i] = Custom.RNV();
+                starOffsets[i] = Random.insideUnitCircle;
                 starSin[i] = new Vector3(Random.value, Random.value, Random.value);
             }
         }
@@ -63,6 +63,8 @@ namespace Dreamer
             base.Update(eu);
             if (playerRef.TryGetTarget(out var player) && CWTs.TryGetData(player, out var data) && data.astral)
             {
+                var maxstr = Plugin.PushStrength.TryGet(player, out var f1) ? f1 : 0.5f;
+                var strmult = Plugin.PushMult.TryGet(player, out var f2) ? f2 : 2f;
                 lastPos = pos;
                 pos += vel;
 
@@ -70,24 +72,24 @@ namespace Dreamer
                 {
                     foreach (var obj in list)
                     {
-                        if (obj == player) continue; // don't affect ourselves
+                        if (obj == player && (!Plugin.AffectSelf.TryGet(player, out var b1) || !b1)) continue; // don't affect ourselves
                         // if (obj is Player && !Custom.rainWorld.options.friendlyFire) continue; // don't affect other jolly players without friendly fire
 
                         foreach (var chunk in obj.bodyChunks)
                         {
-                            var mag = Mathf.Min(1f, 1f / Vector2.Distance(pos, chunk.pos));
-                            if (mag > 0.01f)
+                            var mag = Mathf.Min(maxstr, 1f / Vector2.Distance(pos, chunk.pos)) * strmult;
+                            if (Mathf.Abs(mag) > 0.001f)
                             {
-                                chunk.vel -= (pos - chunk.pos) * mag / chunk.mass;
-                                chunk.pos -= (pos - chunk.pos) * mag / chunk.mass;
+                                chunk.vel -= (pos - chunk.pos).normalized * mag / Mathf.Sqrt(chunk.mass);
+                                chunk.pos += (pos - chunk.pos).normalized * mag / Mathf.Sqrt(chunk.mass);
                             }
                         }
                     }
                 }
 
-                if (Random.value < 1f/60f)
+                if (Random.value < 0.25f)
                 {
-                    room.AddObject(new TinyGlyph(pos, lightColor, Random.Range(5, 10)));
+                    room.AddObject(new TinyGlyph(pos + Random.insideUnitCircle * 14f, lightColor, Random.Range(5, 10)));
                 }
 
                 lastLife = life;
@@ -101,11 +103,11 @@ namespace Dreamer
 
         public void MovementUpdate(Player.InputPackage input)
         {
-            if (input.AnyDirectionalInput)
+            var dir = input.IntVec.ToVector2() * 2f;
+            if (dir.magnitude > 0.05f)
             {
-                var dir = input.analogueDir;
                 var dist = Vector2.Distance(dir, vel);
-                vel = Vector2.Lerp(dir, vel, dist < 0.01f ? 0f : Mathf.Max(0.8f, dist));
+                vel = Vector2.Lerp(dir, vel, dist < 0.01f ? 0f : Mathf.Min(0.4f, dist));
             }
             else
             {
@@ -129,11 +131,11 @@ namespace Dreamer
 
             for (int i = 0; i < cloudCount; i++)
             {
-                sLeaser.sprites[i] = new FSprite("Circle20", true);
+                sLeaser.sprites[i] = new FSprite("Circle20", true) { shader = rCam.game.rainWorld.Shaders["FlatLight"] };
             }
             for (int i = cloudCount; i < cloudCount + starCount; i++)
             {
-                sLeaser.sprites[i] = new FSprite("tinyStar", true);
+                sLeaser.sprites[i] = new FSprite("tinyStar", true) { alpha = Random.Range(0.5f, 0.8f) };
             }
             sLeaser.sprites[sLeaser.sprites.Length - 1] = new FSprite("FaceA0", true);
 
@@ -155,7 +157,7 @@ namespace Dreamer
         {
             for (int i = 0; i < sLeaser.sprites.Length; i++)
             {
-                sLeaser.sprites[i].color = (i < cloudCount) ? Color.Lerp(darkColor, lightColor, Mathf.Pow(Random.value * 0.2f, 1.5f)) : lightColor;
+                sLeaser.sprites[i].color = (i < cloudCount) ? CreateCloudColor() : lightColor;
                 if (i < cloudCount)
                 {
                     sLeaser.sprites[i].alpha = cloudAlphas[i];
@@ -174,24 +176,38 @@ namespace Dreamer
             {
                 float t = lifeFac * 0.3f * cloudSin[i].z + cloudSin[i].w;
                 var v = new Vector2(Mathf.Cos(t + cloudSin[i].x), Mathf.Cos(t + cloudSin[i].y));
-                sLeaser.sprites[i].SetPosition(posFac + Custom.rotateVectorDeg(v, cloudRots[i]) * 12f);
+                sLeaser.sprites[i].SetPosition(posFac + Custom.rotateVectorDeg(v, cloudRots[i]) * 8f);
             }
 
             for (int i = 0; i < starCount; i++)
             {
-                var t = Mathf.Sin(lifeFac * 0.4f * starSin[i].x + starSin[i].y) * starSin[i].z;
-                var s = Custom.rotateVectorDeg(Vector2.up * t, starOffsets[i].GetAngle() + 90f) * 6f;
-                var v = starOffsets[i] * 20f + s;
+                var t = Mathf.Sin(lifeFac * 0.04f * starSin[i].x + starSin[i].y) * starSin[i].z;
+                var s = Custom.rotateVectorDeg(Vector2.up * t, starOffsets[i].GetAngle() + 90f) * 3f;
+                var v = starOffsets[i] * 14f + s;
                 sLeaser.sprites[i + cloudCount].SetPosition(posFac + v);
             }
 
-            sLeaser.sprites[sLeaser.sprites.Length - 1].SetPosition(posFac + vel * 5f);
+            sLeaser.sprites[sLeaser.sprites.Length - 1].SetPosition(posFac + vel * 2.5f);
+        }
+
+        private Color CreateCloudColor()
+        {
+            Color otherColor;
+            if (Random.value < 0.5f)
+            {
+                otherColor = lightColor;
+            }
+            else
+            {
+                otherColor = Color.Lerp(darkColor, Color.black, 0.4f);
+            }
+            return Color.Lerp(darkColor, otherColor, Mathf.Pow(Random.value * 0.2f, 1.5f));
         }
 
         public class TinyGlyph : CosmeticSprite
         {
             private Color color;
-            private int maxLife;
+            private readonly int maxLife;
             private int life;
             private int lastLife;
 

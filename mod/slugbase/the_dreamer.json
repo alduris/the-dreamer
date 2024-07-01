@@ -1,17 +1,36 @@
 {
 	"id": "Dreamer",
 	"name": "The Dreamer",
-	"description": "Eepy",
+	"description": "Thrown into a world of heavy rain and flooding, the world will fight your quest to eep.",
 	"features": {
 		"color": "3300ff",
 		"custom_colors": [
-			{ "name": "Body", "story": "ebe6ff", "arena": [ "ebe6ff", "e6ffeb", "ffebe6", "ffe6fa" ] },
+			{ "name": "Body", "story": "ebe6ff", "arena": [ "d6ccff", "ccffd6", "ffd6cc", "ffccf5" ] },
 			{ "name": "Eyes", "story": "3300ff", "arena": [ "3300ff", "00ff33", "ff3300", "ff00cc" ] }
 		],
 
+		"weight": [0.9, 0.7],
+		"walk_speed": [1.1, 0.85],
+		"tunnel_speed": [1.2, 0.9],
+		"crouch_stealth": 1.5,
+		"lung_capacity": 1.3,
+		"loudness": [0.8, 1.0],
+		"has_dreams": false,
+
 		"start_room": "HI_A22",
+		"food_min": 5,
+		"food_max": 7,
+		"world_state": "Rivulet",
+		"timeline_after": "Rivulet",
+
+		"expedition_enabled": true,
+		"expedition_description": "Eep your way around a flooded world.",
 		
 		"select_menu_scene": "Slugcat_Prototype",
-		"select_menu_scene_ascended": "Ghost_Prototype"
+		"select_menu_scene_ascended": "Ghost_Prototype",
+
+		"dreamer_maxstr": 1,
+		"dreamer_strmult": 5,
+		"dreamer_moveself": false
 	}
 }
