@@ -12,6 +12,6 @@
     "Custom Slugcat"
   ],
   "WorkshopID": 3279388290,
-  "UploadFilesOnly": false,
+  "UploadFilesOnly": true,
   "UploadThumbnail": false
 }
