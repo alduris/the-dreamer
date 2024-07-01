@@ -2,6 +2,7 @@
 using System.Security.Permissions;
 using BepInEx;
 using SlugBase.Features;
+using UnityEngine;
 
 // Allows access to private members
 #pragma warning disable CS0618
@@ -19,6 +20,7 @@ namespace Dreamer
         public static readonly PlayerFeature<bool> AffectSelf = FeatureTypes.PlayerBool("dreamer_moveself");
         public static readonly PlayerFeature<float> PushStrength = FeatureTypes.PlayerFloat("dreamer_maxstr");
         public static readonly PlayerFeature<float> PushMult = FeatureTypes.PlayerFloat("dreamer_strmult");
+        public static readonly PlayerFeature<float> MaxDist = FeatureTypes.PlayerFloat("dreamer_maxdist");
 
         // Add hooks
         public void OnEnable()
@@ -83,15 +85,28 @@ namespace Dreamer
                     data.astralKeyPress = true;
                     data.astral = !data.astral;
                     self.PlayHUDSound(data.astral ? SoundID.SS_AI_Give_The_Mark_Boom : SoundID.Snail_Pop);
+                    if (!data.astral && data.projection != null && !self.dead && !self.room.GetTile(data.projection.pos).Solid)
+                    {
+                        foreach (var chunk in self.bodyChunks)
+                        {
+                            chunk.HardSetPosition(data.projection.pos);
+                            chunk.vel = Vector2.zero;
+                        }
+                    }
                 }
                 else if (data.astralKeyPress && !input.pckp && !input.thrw)
                 {
                     data.astralKeyPress = false;
                 }
+                
+                if (self.dead)
+                {
+                    data.astral = false;
+                }
 
                 if (data.astral)
                 {
-                    self.stun = 11;
+                    self.stun = 180;
 
                     if (data.projection == null)
                     {

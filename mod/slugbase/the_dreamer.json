@@ -27,10 +27,11 @@
 		"expedition_description": "Eep your way around a flooded world.",
 		
 		"select_menu_scene": "Slugcat_Dreamer",
-		"select_menu_scene_ascended": "Ghost_Dreamer",
+		"select_menu_scene_ascended": "Ghost_White",
 
 		"dreamer_maxstr": 1,
 		"dreamer_strmult": 5,
-		"dreamer_moveself": false
+		"dreamer_moveself": false,
+		"dreamer_maxdist": 400
 	}
 }

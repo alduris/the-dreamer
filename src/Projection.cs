@@ -63,10 +63,16 @@ namespace Dreamer
             base.Update(eu);
             if (playerRef.TryGetTarget(out var player) && CWTs.TryGetData(player, out var data) && data.astral)
             {
-                var maxstr = Plugin.PushStrength.TryGet(player, out var f1) ? f1 : 0.5f;
-                var strmult = Plugin.PushMult.TryGet(player, out var f2) ? f2 : 2f;
+                var maxstr = Plugin.PushStrength.TryGet(player, out var _maxstr) ? _maxstr : 0.5f;
+                var strmult = Plugin.PushMult.TryGet(player, out var _strmult) ? _strmult : 2f;
                 lastPos = pos;
                 pos += vel;
+
+                if (Plugin.MaxDist.TryGet(player, out var maxdist) && Vector2.Distance(player.mainBodyChunk.pos, pos) > maxdist)
+                {
+                    var oldpos = pos;
+                    pos = player.mainBodyChunk.pos + (pos - player.mainBodyChunk.pos).normalized * maxdist; // clamp distance
+                }
 
                 foreach (var list in room.physicalObjects)
                 {
