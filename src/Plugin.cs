@@ -46,9 +46,9 @@ namespace Dreamer
         private void RainWorldGame_Update(On.RainWorldGame.orig_Update orig, RainWorldGame self)
         {
             orig(self);
-            if (!(self.session as StoryGameSession).saveState.miscWorldSaveData.pebblesEnergyTaken)
+            if (self.session is StoryGameSession sgs && !sgs.saveState.miscWorldSaveData.pebblesEnergyTaken)
             {
-                (self.session as StoryGameSession).saveState.miscWorldSaveData.pebblesEnergyTaken = true;
+                sgs.saveState.miscWorldSaveData.pebblesEnergyTaken = true;
 
                 // Reload rooms (ripped straight from RM_CORE room script with slight modifications)
                 if (self.world != null)
