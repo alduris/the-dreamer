@@ -1,0 +1,17 @@
+{
+  "Title": "The Dreamer",
+  "Description": "A custom slugcat made for a region jam. Can project themself around the room and somewhat interact with stuff.",
+  "ID": "alduris.dreamer",
+  "Version": "1.0",
+  "TargetGameVersion": "v1.9.15b",
+  "Requirements": "moreslugcats,slime-cubed.slugbase",
+  "RequirementNames": "More Slugcats Expansion,SlugBase",
+  "Authors": "Alduris",
+  "Visibility": "Unlisted",
+  "Tags": [
+    "Custom Slugcat"
+  ],
+  "WorkshopID": 3279388290,
+  "UploadFilesOnly": false,
+  "UploadThumbnail": false
+}
