@@ -26,8 +26,8 @@
 		"expedition_enabled": true,
 		"expedition_description": "Eep your way around a flooded world.",
 		
-		"select_menu_scene": "Slugcat_Prototype",
-		"select_menu_scene_ascended": "Ghost_Prototype",
+		"select_menu_scene": "Slugcat_Dreamer",
+		"select_menu_scene_ascended": "Ghost_Dreamer",
 
 		"dreamer_maxstr": 1,
 		"dreamer_strmult": 5,
