@@ -103,8 +103,14 @@ namespace Dreamer
             self.SuperHardSetPosition(pos);
             foreach (var chunk in self.bodyChunks)
             {
+                chunk.CheckHorizontalCollision();
+                chunk.CheckVerticalCollision();
+                chunk.checkAgainstSlopesVertically();
+                chunk.lastContactPoint = chunk.contactPoint;
                 chunk.vel = Vector2.zero;
             }
+            self.abstractCreature.pos = self.room.GetWorldCoordinate(pos);
+            self.feetStuckPos = null;
 
             self.LoseAllGrasps();
 
