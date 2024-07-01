@@ -34,6 +34,10 @@ namespace Dreamer
                 On.Player.Stun += Player_Stun;
                 On.Player.JumpOnChunk += Player_JumpOnChunk;
 
+                // Tutorial
+                On.Room.Loaded += Room_Loaded;
+                On.RoomSpecificScript.AddRoomSpecificScript += RoomSpecificScript_AddRoomSpecificScript;
+
                 // Random stuff
                 On.RainWorldGame.Update += RainWorldGame_Update;
 
@@ -42,6 +46,27 @@ namespace Dreamer
             catch (Exception e)
             {
                 Logger.LogError(e);
+            }
+        }
+
+        private void Room_Loaded(On.Room.orig_Loaded orig, Room self)
+        {
+            if (self.game != null && self.abstractRoom.name == "HI_A22" && self.game.StoryCharacter == Dreamer)
+            {
+                self.roomSettings.roomSpecificScript = true;
+            }
+            orig(self);
+        }
+
+        private void RoomSpecificScript_AddRoomSpecificScript(On.RoomSpecificScript.orig_AddRoomSpecificScript orig, Room room)
+        {
+            if (room.abstractRoom.name == "HI_A22" && room.game.GetStorySession.saveState.cycleNumber == 0 && room.game.StoryCharacter == Dreamer)
+            {
+                room.AddObject(new Tutorial(room));
+            }
+            else
+            {
+                orig(room);
             }
         }
 
@@ -73,6 +98,22 @@ namespace Dreamer
             }
         }
 
+        private void TeleportPlayer(Player self, Vector2 pos)
+        {
+            self.SuperHardSetPosition(pos);
+            foreach (var chunk in self.bodyChunks)
+            {
+                chunk.vel = Vector2.zero;
+            }
+
+            self.LoseAllGrasps();
+
+            if (self.slugOnBack?.HasASlug ?? false)
+            {
+                TeleportPlayer(self.slugOnBack.slugcat, pos);
+            }
+        }
+
         private void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
         {
             orig(self, eu);
@@ -85,13 +126,10 @@ namespace Dreamer
                     data.astralKeyPress = true;
                     data.astral = !data.astral;
                     self.PlayHUDSound(data.astral ? SoundID.SS_AI_Give_The_Mark_Boom : SoundID.Snail_Pop);
+                    self.LoseAllGrasps();
                     if (!data.astral && data.projection != null && !self.dead && !self.room.GetTile(data.projection.pos).Solid)
                     {
-                        foreach (var chunk in self.bodyChunks)
-                        {
-                            chunk.HardSetPosition(data.projection.pos);
-                            chunk.vel = Vector2.zero;
-                        }
+                        TeleportPlayer(self, data.projection.pos);
                     }
                 }
                 else if (data.astralKeyPress && !input.pckp && !input.thrw)
