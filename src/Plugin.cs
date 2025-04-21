@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Dreamer
 {
-    [BepInPlugin(MOD_ID, "The Dreamer", "1.0")]
+    [BepInPlugin(MOD_ID, "The Dreamer", "1.1")]
     class Plugin : BaseUnityPlugin
     {
         private const string MOD_ID = "alduris.dreamer";
@@ -127,7 +127,7 @@ namespace Dreamer
             {
                 // Toggle ability
                 var input = self.controller?.GetInput() ?? RWInput.PlayerInput(self.playerState.playerNumber);
-                if (input.pckp && input.thrw && !data.astralKeyPress && (self.stun == 0 || data.astral) && self.AI == null)
+                if (input.spec && !data.astralKeyPress && (self.stun == 0 || data.astral) && self.AI == null)
                 {
                     data.astralKeyPress = true;
                     data.astral = !data.astral;
@@ -138,7 +138,7 @@ namespace Dreamer
                         TeleportPlayer(self, data.projection.pos);
                     }
                 }
-                else if (data.astralKeyPress && !input.pckp && !input.thrw)
+                else if (data.astralKeyPress && !input.spec)
                 {
                     data.astralKeyPress = false;
                 }

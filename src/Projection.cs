@@ -35,6 +35,7 @@ namespace Dreamer
 
             lightColor = PlayerColor.GetCustomColor(player.graphicsModule as PlayerGraphics, "Body");
             darkColor = PlayerColor.GetCustomColor(player.graphicsModule as PlayerGraphics, "Eyes");
+            //
 
             cloudCount = Random.Range(10, 20);
             starCount = Random.Range(6, 14);
@@ -93,9 +94,9 @@ namespace Dreamer
                     }
                 }
 
-                if (Random.value < 0.25f)
+                if (Random.value < 0.0625f)
                 {
-                    room.AddObject(new TinyGlyph(pos + Random.insideUnitCircle * 14f, lightColor, Random.Range(5, 10)));
+                    room.AddObject(new TinyGlyph(pos + Random.insideUnitCircle * 14f, Custom.RNV() * Random.Range(0.2f, 3f), lightColor, Random.Range(10, 15)));
                 }
 
                 lastLife = life;
@@ -207,7 +208,13 @@ namespace Dreamer
             {
                 otherColor = Color.Lerp(darkColor, Color.black, 0.4f);
             }
-            return Color.Lerp(darkColor, otherColor, Mathf.Pow(Random.value * 0.2f, 1.5f));
+            return VaryColor(Color.Lerp(darkColor, otherColor, Mathf.Pow(Random.value * 0.2f, 1.5f)));
+        }
+
+        private Color VaryColor(Color color)
+        {
+            var hsl = Custom.RGB2HSL(color);
+            return new HSLColor(Custom.Decimal(hsl.x + (Custom.ClampedRandomVariation(0.5f, 0.07f, 0.3f) - 0.5f)), hsl.y, hsl.z).rgb;
         }
 
         public class TinyGlyph : CosmeticSprite
@@ -261,6 +268,7 @@ namespace Dreamer
             public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
             {
                 base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
+                sLeaser.sprites[0].SetPosition(Vector2.Lerp(lastPos, pos, timeStacker) - camPos);
                 sLeaser.sprites[0].color = new Color(color.r, color.g, color.b, Mathf.Lerp(lastLife, life, timeStacker) / maxLife);
             }
         }

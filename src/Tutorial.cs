@@ -17,7 +17,7 @@ namespace Dreamer
             if (!shown.TryGetValue(room.game, out _) && room.game.session is StoryGameSession && room.game.Players.Count > 0 && room.game.Players[0].realizedCreature != null && room.game.Players[0].realizedCreature.room == room)
             {
                 shown.Add(room.game, new());
-                room.game.cameras[0].hud.textPrompt.AddMessage(room.game.rainWorld.inGameTranslator.Translate("Press grab and throw at the same time to project. Press again to teleport to your projection."), 200, 300, true, true);
+                room.game.cameras[0].hud.textPrompt.AddMessage(room.game.rainWorld.inGameTranslator.Translate("Press SPECIAL to project. Press again to teleport to your projection."), 200, 300, true, true);
                 if (room.game.cameras[0].hud.textPrompt.subregionTracker != null)
                 {
                     room.game.cameras[0].hud.textPrompt.subregionTracker.lastShownRegion = 1;

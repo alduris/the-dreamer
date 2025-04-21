@@ -1,10 +1,10 @@
 ﻿{
 	"id": "alduris.dreamer",
 	"name": "The Dreamer",
-	"version": "1.0",
+	"version": "1.1",
 	"authors": "Alduris",
 	"description": "A custom slugcat made for a mod jam. Can project themself around the room and somewhat interact with stuff.",
 	"requirements": [ "moreslugcats", "slime-cubed.slugbase" ],
-	"requirements_names": [ "More Slugcats Expansion", "SlugBase" ],
-	"tags": [ "Custom Slugcat" ]
+	"requirements_names": [ "More Slugcats Expansion", "SlugBase"],
+	"tags": [ "Custom Slugcat", "Downpour", "Watcher" ]
 }
